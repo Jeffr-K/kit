@@ -1,2 +1,2 @@
-mod rabbitmq;
-mod nats;
+
+pub mod config;

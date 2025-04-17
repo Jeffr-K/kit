@@ -1,16 +1,8 @@
 use ntex::web::types::State;
+use serde_json::json;
 use crate::modules::user::core::command::command::{UserRegisterCommand, UserRegisterCommandResult};
 use crate::modules::user::infrastructure::user_repository::UserRepository;
 use crate::states::{AppState, UserDeps};
-
-// class A { fun a() {} }
-// struct {}, impl
-//
-
-// struct A, impl A { fn a() {} }
-// struct A, func(a A) Add() {}
-
-
 
 #[derive(Debug, Clone)]
 pub struct UserRegisterCommandHandler {
@@ -38,8 +30,21 @@ impl UserRegisterCommandHandler {
                     format!("Error inserting user: {:?}", e)
                 })?;
 
-        Ok(UserRegisterCommandResult {
-            id: user.id,
-        })
+        let event = json!({
+            "event": "user.registered",
+            "user": {
+                "id": user.id,
+                "username": user.name,
+                "email": user.email,
+            }
+        });
+
+        state
+            .nats_client
+                .publish("user.registered", serde_json::to_vec(&event).unwrap().into())
+                .await
+                .map_err(|e| format!("Failed to publish NATS event: {}", e))?;
+
+        Ok(UserRegisterCommandResult { id: user.id })
     }
 }

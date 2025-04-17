@@ -1,9 +1,11 @@
+use async_nats::Client;
 use sqlx::PgPool;
 use crate::modules::user::core::command::handler::UserRegisterCommandHandler;
 use crate::modules::user::infrastructure::user_repository::UserRepository;
 
 pub struct AppState {
     pub pool: PgPool,
+    pub nats_client: Client,
 }
 
 #[derive(Debug, Clone)]

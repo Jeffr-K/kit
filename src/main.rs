@@ -3,6 +3,7 @@ mod states;
 mod infrastructure;
 
 use std::env;
+use async_nats::ConnectOptions;
 use ntex::web::*;
 use sqlx::postgres::PgPoolOptions;
 use crate::modules::user::core::command::handler::UserRegisterCommandHandler;
@@ -35,10 +36,17 @@ async fn main() -> std::io::Result<()>{
 
     println!("\nSERVER ADDRESS IS: {}", &server_addr);
 
+    let nats_client = ConnectOptions::new()
+        .name("rust-client")
+        .connect("localhost:4222")
+        .await
+        .expect("Failed to connect to the server");
+
     HttpServer::new(move || {
         App::new()
             .state(AppState {
                 pool: pool_clone.clone(),
+                nats_client: nats_client.clone(),
             })
             .state(user_deps.clone())
             .service(createUser)

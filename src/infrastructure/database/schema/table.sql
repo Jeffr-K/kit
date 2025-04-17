@@ -6,3 +6,11 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMP NULL DEFAULT NULL
 );
+
+ALTER TABLE users
+    ALTER COLUMN created_at TYPE TIMESTAMPTZ
+        USING created_at AT TIME ZONE 'UTC';
+
+ALTER TABLE users
+    ALTER COLUMN deleted_at TYPE TIMESTAMPTZ
+        USING created_at AT TIME ZONE 'UTC';
