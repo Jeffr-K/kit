@@ -14,6 +14,24 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: server_db
+    networks:
+      - backend
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:latest
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    depends_on:
+      - database
+    networks:
+      - backend
 
   nats:
     container_name: nats
@@ -34,7 +52,63 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
+    networks:
+      - backend
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.listen-address=:9090'
+      - '--web.enable-lifecycle'
+    networks:
+      - backend
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_USERS_ALLOW_SIGN_UP: "false"
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+      GF_AUTH_ANONYMOUS_ORG_ROLE: "Viewer"
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - backend
+
+  redis:
+    container_name: redis
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - backend
+
+networks:
+  backend:
+    driver: bridge
 
 volumes:
   postgres_data:
   nats_data:
+  redis_data:
+  grafana_data:
+  elasticsearch_data:
+  pgadmin_data:
+  prometheus_data:
+  logstash_pipeline:
