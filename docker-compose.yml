@@ -1,6 +1,7 @@
 version: '3.8'
 
 services:
+
   database:
     container_name: localdb
     image: postgres:15
@@ -14,5 +15,26 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: server_db
 
+  nats:
+    container_name: nats
+    image: nats:latest
+    restart: always
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
+    command: [
+      "--jetstream",
+      "-m", "8222"
+    ]
+    volumes:
+      - nats_data:/nats
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8222/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
 volumes:
   postgres_data:
+  nats_data:

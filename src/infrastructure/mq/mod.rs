@@ -1,1 +1,2 @@
 mod rabbitmq;
+mod nats;
