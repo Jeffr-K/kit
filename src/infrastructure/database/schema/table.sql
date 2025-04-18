@@ -11,6 +11,9 @@ ALTER TABLE users
     ALTER COLUMN created_at TYPE TIMESTAMPTZ
         USING created_at AT TIME ZONE 'UTC';
 
+ALTER TABLE users ALTER COLUMN updated_at TYPE TIMESTAMP
+    WITH TIME ZONE;
+
 ALTER TABLE users
     ALTER COLUMN deleted_at TYPE TIMESTAMPTZ
         USING created_at AT TIME ZONE 'UTC';

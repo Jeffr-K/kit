@@ -4,15 +4,19 @@ mod infrastructure;
 
 use std::env;
 use async_nats::ConnectOptions;
+use fastrace::collector::{Config, ConsoleReporter};
 use ntex::web::*;
 use sqlx::postgres::PgPoolOptions;
+use crate::infrastructure::trace::tracer::Tracer;
 use crate::modules::user::core::command::handler::UserRegisterCommandHandler;
 use crate::modules::user::infrastructure::user_repository::UserRepository;
 use crate::modules::user::interface::user_route::createUser;
 use crate::states::{AppState, UserDeps};
 
 #[ntex::main]
-async fn main() -> std::io::Result<()>{
+async fn main() -> std::io::Result<()> {
+    fastrace::set_reporter(ConsoleReporter, Config::default());
+
     dotenv::from_filename(".development.env").ok();
 
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
@@ -49,6 +53,7 @@ async fn main() -> std::io::Result<()>{
                 nats_client: nats_client.clone(),
             })
             .state(user_deps.clone())
+            .wrap(Tracer)
             .service(createUser)
     })
         .bind(("127.0.0.1", 8080))?

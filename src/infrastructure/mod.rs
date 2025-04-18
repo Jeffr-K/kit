@@ -1,3 +1,4 @@
 pub mod application;
 pub mod database;
-mod mq;
+pub mod mq;
+pub mod trace;

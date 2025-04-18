@@ -1,9 +1,11 @@
+use fastrace::prelude::SpanContext;
 use ntex::web::*;
 use ntex::web::types::{Json, State};
 use crate::modules::user::core::command::command::UserRegisterCommand;
 use crate::states::{AppState, UserDeps};
 
 #[post("/user")]
+#[fastrace::trace]
 #[allow(non_snake_case)]
 async fn createUser(
     command: Json<UserRegisterCommand>,
@@ -22,6 +24,6 @@ async fn createUser(
             return Ok(HttpResponse::InternalServerError().body(format!("Error: {}", e)));
         }
     };
-
+    
     Ok(HttpResponse::Ok().json(&result))
 }
