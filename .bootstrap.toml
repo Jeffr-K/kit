@@ -1,0 +1,40 @@
+# config.toml
+
+[database]
+host = "localhost"
+port = 5436
+user = "postgres"
+password = "postgres"
+database = "server_db"
+pool_size = 5
+
+[nats]
+url = "localhost:4222"
+connection_name = "rust-service"
+jetstream_enabled = true
+monitoring_port = 8222
+
+[redis]
+host = "localhost"
+port = 6379
+
+[prometheus]
+host = "localhost"
+port = 9090
+metrics_path = "/metrics"
+scrape_interval = "15s"
+
+[grafana]
+host = "localhost"
+port = 3000
+
+[server]
+host = "0.0.0.0"
+port = 8080
+environment = "development"
+log_level = "debug"
+
+[trace]
+enabled = true
+endpoint = "http://localhost:14268/api/traces"
+integrations = ["jaeger", "open-telemetry", "datadog"]

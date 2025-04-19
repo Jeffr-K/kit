@@ -1,4 +1,3 @@
-use fastrace::prelude::SpanContext;
 use ntex::web::*;
 use ntex::web::types::{Json, State};
 use crate::modules::user::core::command::command::UserRegisterCommand;

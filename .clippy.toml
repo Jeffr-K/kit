@@ -1,0 +1,22 @@
+# [clippy](https://github.com/rust-lang/rust-clippy)
+
+# 특정 린트 비활성화
+blacklisted-names = false
+
+# 특정 규칙의 임계값 설정
+too-many-arguments-threshold = 10
+
+# 경고를 표시할 최소 코드 복잡도 설정
+cyclomatic-complexity-threshold = 30
+
+# 특정 린트 허용
+allow = [
+    "clippy::module_name_repetitions",
+    "clippy::bool_comparison"
+]
+
+# 특정 린트 거부
+deny = [
+    "clippy::unwrap_used",
+    "clippy::expect_used"
+]

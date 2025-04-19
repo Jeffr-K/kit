@@ -31,7 +31,6 @@ where
         req: web::WebRequest<Err>,
         ctx: ServiceCtx<'_, Self>,
     ) -> Result<Self::Response, Self::Error> {
-        // 현재 요청의 메서드와 경로 추출
         let method = req.method().to_string();
         let path = req.path().to_string();
         
