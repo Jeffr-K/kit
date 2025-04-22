@@ -10,6 +10,7 @@ use sqlx::postgres::PgPoolOptions;
 use crate::infrastructure::trace::tracer::Tracer;
 use crate::modules::user::core::command::handler::UserRegisterCommandHandler;
 use crate::modules::user::infrastructure::user_repository::UserRepository;
+use crate::modules::user::infrastructure::user_security_repository::UserSecurityRepository;
 use crate::modules::user::interface::user_route::createUser;
 use crate::states::{AppState, UserDeps};
 
@@ -31,11 +32,13 @@ async fn main() -> std::io::Result<()> {
     let pool_clone = pool.clone();
 
     let user_repository = UserRepository::new(pool.clone());
-    let user_register_command_handler = UserRegisterCommandHandler::new(user_repository.clone());
+    let user_security_repository = UserSecurityRepository::new(pool.clone());
+    let user_register_command_handler = UserRegisterCommandHandler::new(user_repository.clone(), user_security_repository.clone());
 
     let user_deps = UserDeps {
         user_register_command_handler,
         user_repository,
+        user_security_repository,
     };
 
     println!("\nSERVER ADDRESS IS: {}", &server_addr);

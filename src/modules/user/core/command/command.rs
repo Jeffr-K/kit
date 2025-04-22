@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 pub struct UserRegisterCommand {
     pub name: String,
     pub email: String,
+    pub password: String,
 }
 
 #[derive(Deserialize, Serialize, Debug)]

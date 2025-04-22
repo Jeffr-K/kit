@@ -23,6 +23,9 @@ reqwest-retry = "0.7.0"
 reqwest-middleware-cache = "0.1.1"
 tokio = "1.44.2"
 mockito = "1.7.0"
+pbkdf2 = { version = "0.12", features = ["simple"] }
+rand_core = { version = "0.9.3", features = ["std"] }
+futures = "0.3.31"
 
 [dev-dependencies]
 
